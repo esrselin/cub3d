@@ -1,0 +1,14 @@
+obj/
+obj_bonus/
+.bonus
+cub3D
+*.o
+*.d
+*.a
+minilibx-linux/Makefile.gen
+minilibx-linux/test/mlx-test
+minilibx_macos_*.tgz
+.vscode/
+*.tgz
+*.pdf
+CUB3D_PHASE_PROMPTS.md
