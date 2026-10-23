@@ -1,0 +1,8 @@
+/* XPM */
+static char *east[] = {
+"2 2 2 1",
+"a c #C0C030",
+"b c #808020",
+"ab",
+"ba"
+};
