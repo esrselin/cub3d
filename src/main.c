@@ -27,9 +27,10 @@ int	main(int argc, char **argv)
 {
 	t_game	game;
 
-	(void)argc;
-	(void)argv;
 	ft_bzero(&game, sizeof(t_game));
+	if (argc != 2)
+		exit_error(&game, "usage: ./cub3D <scene.cub>");
+	parse_cub(&game, argv[1]);
 	if (!init_window(&game))
 		exit_error(&game, "miniLibX initialisation failed");
 	set_hooks(&game);

@@ -310,3 +310,23 @@ Extra shell checks that need no file:
 ./cub3D maps/none.cub         # F4 cannot open
 valgrind --leak-check=full ./cub3D maps/invalid/bad_rgb.cub   # must be leak-free
 ```
+
+---
+
+## 6. Implementation notes (what the code does differently from sections 2-3)
+
+- Error propagation uses a small `t_parse` context (`lines`, `n`, `err`, `detail[256]`)
+  instead of `const char *` return values. Every parser function returns 1 on success
+  or `set_err(p, msg, detail)` which stores the message and returns 0. `parse_fail`
+  in `parse.c` prints `Error\n<msg>: <detail>`, frees the lines and the game, exits 1.
+  The detail is copied into the context so it can safely come from split tokens or
+  file lines that are freed before printing.
+- `exit_error` keeps its two-argument form; only the parser needs a detail string.
+- `check_extension` and the open/read probe are merged into `check_path` so
+  `parse_file.c` stays at five functions.
+- `tabs_to_spaces` lives in `parse_element.c` (its only user); `parse_line.c` gained
+  `ident_name` (index -> "NO"/"SO"/.../"C"), used for messages and by `get_identifier`.
+- `find_map_start` calls `parse_element` for every non-blank, non-map line, so the
+  "unknown identifier" error is produced by `parse_element`, not by the loop.
+- `collect_map` also sets `map->h`.
+- `cleanup.c` gained a static `free_map` (texture paths + grid), called from `free_game`.

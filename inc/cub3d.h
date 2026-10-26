@@ -58,6 +58,12 @@ enum e_side
 	EA = 3
 };
 
+/* Identifier indexes 4 and 5 (after the four sides) are the colours.      */
+# define ID_F				4
+# define ID_C				5
+# define ID_COUNT			6
+# define ERR_DETAIL_LEN		256
+
 /*
 ** t_tex - one mlx image and the raw pixel buffer behind it.
 ** Reason: both the on-screen frame buffer and the four wall textures are
@@ -107,8 +113,25 @@ typedef struct s_map
 	char	*tex_path[4];
 	int		floor_rgb;
 	int		ceil_rgb;
+	int		floor_set;
+	int		ceil_set;
 	char	spawn_dir;
 }	t_map;
+
+/*
+** t_parse - parser-only state, lives on parse_cub's stack.
+** Reason: the raw file lines and the pending error message are needed only
+** while parsing; keeping them out of t_game means nothing to free later and
+** one place (parse_fail) that prints, frees and exits.
+** detail is a copy, so it may come from a buffer that is freed afterwards.
+*/
+typedef struct s_parse
+{
+	char		**lines;
+	int			n;
+	const char	*err;
+	char		detail[ERR_DETAIL_LEN];
+}	t_parse;
 
 /*
 ** t_game - root object passed to every mlx callback as the `void *param`.
@@ -137,10 +160,33 @@ int		close_game(t_game *game);
 void	exit_error(t_game *game, const char *msg);
 
 /* ---------------------------------------------------------------------- */
-/*  Phase 1-2 - parsing & validation (to be implemented)                   */
+/*  Phase 1 - scene file parsing (implemented)                             */
+/*  Every parser function returns 1 on success, 0 after set_err().         */
 /* ---------------------------------------------------------------------- */
-int		parse_cub(t_game *game, const char *path);
-int		validate_map(t_game *game);
+/* parse.c */
+void		parse_cub(t_game *game, const char *path);
+int			set_err(t_parse *p, const char *msg, const char *detail);
+/* parse_file.c */
+int			load_file(t_parse *p, const char *path);
+/* parse_line.c */
+int			is_blank(const char *s);
+const char	*skip_ws(const char *s);
+const char	*ident_name(int id);
+int			get_identifier(const char *s);
+int			is_map_line(const char *s);
+/* parse_element.c */
+int			parse_element(t_parse *p, t_map *map, char *line);
+/* parse_rgb.c */
+int			parse_rgb(t_parse *p, const char *s, int *out);
+/* parse_map_start.c */
+int			find_map_start(t_parse *p, t_map *map);
+int			collect_map(t_parse *p, t_map *map, int start);
+int			check_all_set(t_parse *p, t_map *map);
+
+/* ---------------------------------------------------------------------- */
+/*  Phase 2 - map validation (to be implemented)                           */
+/* ---------------------------------------------------------------------- */
+int			validate_map(t_game *game);
 
 /* ---------------------------------------------------------------------- */
 /*  Phase 3-5 - images, raycasting, textures (to be implemented)           */

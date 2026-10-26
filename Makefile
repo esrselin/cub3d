@@ -30,7 +30,13 @@ BOBJ_DIR    := obj_bonus
 
 SRCS        := main.c \
                hooks.c \
-               cleanup.c
+               cleanup.c \
+               parse.c \
+               parse_file.c \
+               parse_line.c \
+               parse_element.c \
+               parse_rgb.c \
+               parse_map_start.c
 
 
 BONUS_ONLY  :=
