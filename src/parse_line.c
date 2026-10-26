@@ -68,15 +68,23 @@ int	get_identifier(const char *s)
 }
 
 /*
-** A map line starts with a map character and is not an element line.
-** Only the first character is checked here; phase 2 validates every cell.
+** A map line is non-blank, made only of map characters and whitespace, and
+** is not an element line ("NO" alone would otherwise pass). Lines such as
+** "NO./a.xpm" or "NORTH ./a.xpm" fail here and reach parse_element, which
+** reports them as unknown identifiers. Phase 2 validates cell semantics.
 */
 int	is_map_line(const char *s)
 {
-	s = skip_ws(s);
-	if (*s == '\0')
+	const char	*c;
+
+	c = skip_ws(s);
+	if (*c == '\0' || get_identifier(c) >= 0)
 		return (0);
-	if (!ft_strchr("01NSEW", *s))
-		return (0);
-	return (get_identifier(s) < 0);
+	while (*c)
+	{
+		if (!ft_strchr("01NSEW \t", *c))
+			return (0);
+		c++;
+	}
+	return (1);
 }
