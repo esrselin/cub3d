@@ -64,6 +64,9 @@ enum e_side
 # define ID_COUNT			6
 # define ERR_DETAIL_LEN		256
 
+/* Camera plane half-length: tan(66deg / 2) ~= 0.66 gives a 66deg FOV.     */
+# define FOV_PLANE			0.66
+
 /*
 ** t_tex - one mlx image and the raw pixel buffer behind it.
 ** Reason: both the on-screen frame buffer and the four wall textures are
@@ -184,9 +187,13 @@ int			collect_map(t_parse *p, t_map *map, int start);
 int			check_all_set(t_parse *p, t_map *map);
 
 /* ---------------------------------------------------------------------- */
-/*  Phase 2 - map validation (to be implemented)                           */
+/*  Phase 2 - map validation (implemented)                                 */
 /* ---------------------------------------------------------------------- */
-int			validate_map(t_game *game);
+/* map_validate.c */
+int			validate_map(t_parse *p, t_game *game);
+char		map_cell(t_map *map, int x, int y);
+/* map_player.c */
+int			find_player(t_parse *p, t_game *game);
 
 /* ---------------------------------------------------------------------- */
 /*  Phase 3-5 - images, raycasting, textures (to be implemented)           */

@@ -45,7 +45,7 @@ static void	parse_fail(t_game *game, t_parse *p)
 /*
 ** Fills game->map from the scene file or exits with "Error\n<message>".
 ** Order: file checks -> elements until the first map line -> raw map rows
-** -> all six elements present. The map grid itself is validated in phase 2.
+** -> all six elements present -> map grid validation (closed, one player).
 */
 void	parse_cub(t_game *game, const char *path)
 {
@@ -59,7 +59,8 @@ void	parse_cub(t_game *game, const char *path)
 	if (start < 0)
 		parse_fail(game, &p);
 	if (!collect_map(&p, &game->map, start)
-		|| !check_all_set(&p, &game->map))
+		|| !check_all_set(&p, &game->map)
+		|| !validate_map(&p, game))
 		parse_fail(game, &p);
 	ft_free_tab(p.lines);
 }
