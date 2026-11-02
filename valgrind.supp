@@ -1,0 +1,35 @@
+{
+   mlx_init_xopendisplay
+   Memcheck:Leak
+   match-leak-kinds: all
+   ...
+   fun:XOpenDisplay
+}
+{
+   mlx_x11_internal
+   Memcheck:Leak
+   match-leak-kinds: all
+   ...
+   obj:*/libX11.so*
+}
+{
+   mlx_xext_internal
+   Memcheck:Leak
+   match-leak-kinds: all
+   ...
+   obj:*/libXext.so*
+}
+{
+   mlx_xshm_image
+   Memcheck:Leak
+   match-leak-kinds: all
+   ...
+   fun:mlx_new_image
+}
+{
+   mlx_xpm_loader
+   Memcheck:Leak
+   match-leak-kinds: all
+   ...
+   fun:mlx_xpm_file_to_image
+}

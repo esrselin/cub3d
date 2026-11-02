@@ -18,6 +18,7 @@
 # include <fcntl.h>
 # include <stdio.h>
 # include <math.h>
+# include <sys/time.h>
 # include "mlx.h"
 # include "libft.h"
 
@@ -66,6 +67,21 @@ enum e_side
 
 /* Camera plane half-length: tan(66deg / 2) ~= 0.66 gives a 66deg FOV.     */
 # define FOV_PLANE			0.66
+
+/* Minimum time between two rendered frames (ms): ~60 fps.                 */
+# define FRAME_MS			16
+
+/* Indexes into t_game.keys: the keys whose held state matters.            */
+enum e_key
+{
+	K_W = 0,
+	K_A = 1,
+	K_S = 2,
+	K_D = 3,
+	K_LEFT = 4,
+	K_RIGHT = 5,
+	K_COUNT = 6
+};
 
 /*
 ** t_tex - one mlx image and the raw pixel buffer behind it.
@@ -150,17 +166,33 @@ typedef struct s_game
 	t_tex		tex[4];
 	t_map		map;
 	t_player	player;
+	int			keys[K_COUNT];
+	long		last_frame;
 }	t_game;
 
 /* ---------------------------------------------------------------------- */
-/*  Phase 0 - window / events / cleanup (implemented)                      */
+/*  Phase 0/3 - window, image buffer, events, cleanup (implemented)        */
 /* ---------------------------------------------------------------------- */
-void	set_hooks(t_game *game);
-int		handle_key(int keycode, t_game *game);
-int		handle_close(t_game *game);
-void	free_game(t_game *game);
-int		close_game(t_game *game);
-void	exit_error(t_game *game, const char *msg);
+/* window.c */
+int			init_window(t_game *game);
+int			init_frame(t_game *game);
+long		now_ms(void);
+int			game_loop(t_game *game);
+/* hooks.c */
+int			key_index(int keycode);
+int			handle_key(int keycode, t_game *game);
+int			handle_release(int keycode, t_game *game);
+int			handle_close(t_game *game);
+void		set_hooks(t_game *game);
+/* image.c */
+void		put_pixel(t_tex *img, int x, int y, int color);
+void		draw_background(t_game *game);
+void		present_frame(t_game *game);
+int			render_frame(t_game *game);
+/* cleanup.c */
+void		free_game(t_game *game);
+int			close_game(t_game *game);
+void		exit_error(t_game *game, const char *msg);
 
 /* ---------------------------------------------------------------------- */
 /*  Phase 1 - scene file parsing (implemented)                             */
@@ -196,12 +228,9 @@ char		map_cell(t_map *map, int x, int y);
 int			find_player(t_parse *p, t_game *game);
 
 /* ---------------------------------------------------------------------- */
-/*  Phase 3-5 - images, raycasting, textures (to be implemented)           */
+/*  Phase 4-5 - raycasting, textures (to be implemented)                   */
 /* ---------------------------------------------------------------------- */
-int		init_frame(t_game *game);
 int		load_textures(t_game *game);
-int		render_frame(t_game *game);
-void	put_pixel(t_tex *img, int x, int y, int color);
 
 /* ---------------------------------------------------------------------- */
 /*  Phase 6 - movement (to be implemented)                                 */

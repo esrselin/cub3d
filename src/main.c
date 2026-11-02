@@ -12,17 +12,6 @@
 
 #include "cub3d.h"
 
-static int	init_window(t_game *game)
-{
-	game->mlx = mlx_init();
-	if (!game->mlx)
-		return (0);
-	game->win = mlx_new_window(game->mlx, WIN_W, WIN_H, WIN_TITLE);
-	if (!game->win)
-		return (0);
-	return (1);
-}
-
 int	main(int argc, char **argv)
 {
 	t_game	game;
@@ -33,6 +22,8 @@ int	main(int argc, char **argv)
 	parse_cub(&game, argv[1]);
 	if (!init_window(&game))
 		exit_error(&game, "miniLibX initialisation failed");
+	if (!init_frame(&game))
+		exit_error(&game, "miniLibX image creation failed");
 	set_hooks(&game);
 	mlx_loop(game.mlx);
 	return (0);

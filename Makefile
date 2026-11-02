@@ -29,7 +29,9 @@ OBJ_DIR     := obj
 BOBJ_DIR    := obj_bonus
 
 SRCS        := main.c \
+               window.c \
                hooks.c \
+               image.c \
                cleanup.c \
                parse.c \
                parse_file.c \

@@ -27,9 +27,34 @@ static void	free_map(t_map *map)
 	map->grid = NULL;
 }
 
+/* Images need the display, so they go before the window and the display. */
+static void	free_images(t_game *game)
+{
+	int	i;
+
+	if (game->frame.img)
+		mlx_destroy_image(game->mlx, game->frame.img);
+	game->frame.img = NULL;
+	i = 0;
+	while (i < 4)
+	{
+		if (game->tex[i].img)
+			mlx_destroy_image(game->mlx, game->tex[i].img);
+		game->tex[i].img = NULL;
+		i++;
+	}
+}
+
+/*
+** Shutdown order: images -> window -> display -> free(mlx) -> own data.
+** mlx_destroy_display exists only in the Linux minilibx; the macOS one
+** has no display handle to release.
+*/
 void	free_game(t_game *game)
 {
 	free_map(&game->map);
+	if (game->mlx)
+		free_images(game);
 	if (game->win)
 		mlx_destroy_window(game->mlx, game->win);
 	if (game->mlx)
