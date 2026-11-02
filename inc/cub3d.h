@@ -71,6 +71,12 @@ enum e_side
 /* Minimum time between two rendered frames (ms): ~60 fps.                 */
 # define FRAME_MS			16
 
+/* Phase 4 flat wall colours: x-side hits lighter, y-side hits darker.     */
+# define WALL_X_COLOR		0xC8C8C8
+# define WALL_Y_COLOR		0x7A7A7A
+/* Substitute for 1/0 when a ray component is exactly zero.                */
+# define RAY_INF			1e30
+
 /* Indexes into t_game.keys: the keys whose held state matters.            */
 enum e_key
 {
@@ -153,6 +159,45 @@ typedef struct s_parse
 }	t_parse;
 
 /*
+** t_ray - everything about the ray cast for one screen column (Lodev DDA).
+** Reason: the per-column state is passed between init_ray / perform_dda /
+** compute_wall / draw_column; one struct keeps every function under four
+** parameters and makes each step testable on its own.
+**   camera_x   -1 (left edge) .. +1 (right edge) of the screen
+**   dir_x/y    ray direction = player dir + plane * camera_x
+**   map_x/y    grid cell the ray is currently in
+**   delta_x/y  distance along the ray between two x (resp. y) grid lines
+**   side_x/y   distance along the ray to the next x (resp. y) grid line
+**   step_x/y   +1 or -1, which way the ray crosses cells
+**   side       0 = hit an x-side (vertical wall), 1 = hit a y-side
+**   perp       perpendicular distance to the wall (no fisheye)
+**   face       which wall face was hit: NO / SO / WE / EA (texture index)
+*/
+typedef struct s_ray
+{
+	double	camera_x;
+	double	dir_x;
+	double	dir_y;
+	int		map_x;
+	int		map_y;
+	double	delta_x;
+	double	delta_y;
+	double	side_x;
+	double	side_y;
+	int		step_x;
+	int		step_y;
+	int		side;
+	int		hit;
+	double	perp;
+	int		line_h;
+	int		draw_start;
+	int		draw_end;
+	int		face;
+	double	wall_x;
+	int		tex_x;
+}	t_ray;
+
+/*
 ** t_game - root object passed to every mlx callback as the `void *param`.
 ** Reason: mlx hooks accept a single user pointer, so every subsystem the
 ** callbacks need (window, frame, map, player, textures) hangs off here.
@@ -174,6 +219,7 @@ typedef struct s_game
 /*  Phase 0/3 - window, image buffer, events, cleanup (implemented)        */
 /* ---------------------------------------------------------------------- */
 /* window.c */
+int			init_mlx(t_game *game);
 int			init_window(t_game *game);
 int			init_frame(t_game *game);
 long		now_ms(void);
@@ -186,9 +232,26 @@ int			handle_close(t_game *game);
 void		set_hooks(t_game *game);
 /* image.c */
 void		put_pixel(t_tex *img, int x, int y, int color);
-void		draw_background(t_game *game);
 void		present_frame(t_game *game);
 int			render_frame(t_game *game);
+
+/* ---------------------------------------------------------------------- */
+/*  Phase 4 - raycasting (implemented)                                     */
+/* ---------------------------------------------------------------------- */
+/* raycast.c */
+void		init_ray(t_game *game, t_ray *ray, int x);
+void		init_step(t_game *game, t_ray *ray);
+void		perform_dda(t_game *game, t_ray *ray);
+void		compute_wall(t_ray *ray);
+int			wall_face(t_ray *ray);
+/* render.c */
+void		draw_wall(t_game *game, t_ray *ray, int x);
+void		draw_column(t_game *game, t_ray *ray, int x);
+void		cast_rays(t_game *game);
+/* texture.c */
+void		load_textures(t_game *game);
+int			get_texel(t_tex *tex, int x, int y);
+void		tex_column(t_game *game, t_ray *ray);
 /* cleanup.c */
 void		free_game(t_game *game);
 int			close_game(t_game *game);
@@ -226,11 +289,6 @@ int			validate_map(t_parse *p, t_game *game);
 char		map_cell(t_map *map, int x, int y);
 /* map_player.c */
 int			find_player(t_parse *p, t_game *game);
-
-/* ---------------------------------------------------------------------- */
-/*  Phase 4-5 - raycasting, textures (to be implemented)                   */
-/* ---------------------------------------------------------------------- */
-int		load_textures(t_game *game);
 
 /* ---------------------------------------------------------------------- */
 /*  Phase 6 - movement (to be implemented)                                 */

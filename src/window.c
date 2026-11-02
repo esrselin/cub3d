@@ -12,11 +12,19 @@
 
 #include "cub3d.h"
 
-int	init_window(t_game *game)
+/* Connects to the X server. Needed before textures can be loaded.        */
+int	init_mlx(t_game *game)
 {
 	game->mlx = mlx_init();
 	if (!game->mlx)
 		return (0);
+	return (1);
+}
+
+/* Opened only once every texture is loaded, so a bad XPM never shows a
+** window that immediately disappears.                                    */
+int	init_window(t_game *game)
+{
 	game->win = mlx_new_window(game->mlx, WIN_W, WIN_H, WIN_TITLE);
 	if (!game->win)
 		return (0);

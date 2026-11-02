@@ -28,38 +28,15 @@ void	put_pixel(t_tex *img, int x, int y, int color)
 	*(unsigned int *)dst = (unsigned int)color;
 }
 
-/* Ceiling colour on the upper half, floor colour on the lower half.      */
-void	draw_background(t_game *game)
-{
-	int	x;
-	int	y;
-	int	color;
-
-	y = 0;
-	while (y < WIN_H)
-	{
-		color = game->map.ceil_rgb;
-		if (y >= WIN_H / 2)
-			color = game->map.floor_rgb;
-		x = 0;
-		while (x < WIN_W)
-		{
-			put_pixel(&game->frame, x, y, color);
-			x++;
-		}
-		y++;
-	}
-}
-
 void	present_frame(t_game *game)
 {
 	mlx_put_image_to_window(game->mlx, game->win, game->frame.img, 0, 0);
 }
 
-/* Full redraw: background now, walls from phase 4 on top of it.          */
+/* One ray per screen column fills the whole frame, then one blit.        */
 int	render_frame(t_game *game)
 {
-	draw_background(game);
+	cast_rays(game);
 	present_frame(game);
 	return (1);
 }

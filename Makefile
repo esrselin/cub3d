@@ -32,6 +32,9 @@ SRCS        := main.c \
                window.c \
                hooks.c \
                image.c \
+               raycast.c \
+               render.c \
+               texture.c \
                cleanup.c \
                parse.c \
                parse_file.c \

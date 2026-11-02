@@ -20,8 +20,11 @@ int	main(int argc, char **argv)
 	if (argc != 2)
 		exit_error(&game, "usage: ./cub3D <scene.cub>");
 	parse_cub(&game, argv[1]);
-	if (!init_window(&game))
+	if (!init_mlx(&game))
 		exit_error(&game, "miniLibX initialisation failed");
+	load_textures(&game);
+	if (!init_window(&game))
+		exit_error(&game, "miniLibX window creation failed");
 	if (!init_frame(&game))
 		exit_error(&game, "miniLibX image creation failed");
 	set_hooks(&game);
