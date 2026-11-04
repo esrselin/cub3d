@@ -35,6 +35,7 @@ SRCS        := main.c \
                raycast.c \
                render.c \
                texture.c \
+               movement.c \
                cleanup.c \
                parse.c \
                parse_file.c \

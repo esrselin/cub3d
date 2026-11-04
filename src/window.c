@@ -68,11 +68,16 @@ long	now_ms(void)
 int	game_loop(t_game *game)
 {
 	long	now;
+	double	dt;
 
 	now = now_ms();
 	if (now - game->last_frame < FRAME_MS)
 		return (0);
+	dt = (now - game->last_frame) / 1000.0;
+	if (dt > MAX_DT)
+		dt = MAX_DT;
 	game->last_frame = now;
+	handle_keys(game, dt);
 	render_frame(game);
 	return (0);
 }

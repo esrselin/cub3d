@@ -29,5 +29,6 @@ int	main(int argc, char **argv)
 		exit_error(&game, "miniLibX image creation failed");
 	set_hooks(&game);
 	mlx_loop(game.mlx);
+	free_game(&game);
 	return (0);
 }

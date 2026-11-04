@@ -71,6 +71,18 @@ enum e_side
 /* Minimum time between two rendered frames (ms): ~60 fps.                 */
 # define FRAME_MS			16
 
+/*
+** Movement is time based: cells per second and radians per second, scaled
+** by the measured frame delta so speed is the same on any machine.
+** MAX_DT caps the delta after a stall (window dragged, minimised) so the
+** player never teleports through a wall in one frame.
+*/
+# define MOVE_SPEED			3.0
+# define ROT_SPEED			2.0
+# define MAX_DT				0.1
+/* Distance kept between the camera and any wall (in cells).              */
+# define WALL_MARGIN		0.15
+
 /* Phase 4 flat wall colours: x-side hits lighter, y-side hits darker.     */
 # define WALL_X_COLOR		0xC8C8C8
 # define WALL_Y_COLOR		0x7A7A7A
@@ -252,6 +264,11 @@ void		cast_rays(t_game *game);
 void		load_textures(t_game *game);
 int			get_texel(t_tex *tex, int x, int y);
 void		tex_column(t_game *game, t_ray *ray);
+/* movement.c */
+int			can_move(t_game *game, double x, double y);
+void		move_player(t_game *game, double dx, double dy);
+void		rotate_player(t_game *game, double angle);
+void		handle_keys(t_game *game, double dt);
 /* cleanup.c */
 void		free_game(t_game *game);
 int			close_game(t_game *game);
@@ -289,11 +306,5 @@ int			validate_map(t_parse *p, t_game *game);
 char		map_cell(t_map *map, int x, int y);
 /* map_player.c */
 int			find_player(t_parse *p, t_game *game);
-
-/* ---------------------------------------------------------------------- */
-/*  Phase 6 - movement (to be implemented)                                 */
-/* ---------------------------------------------------------------------- */
-void	move_player(t_game *game, double dx, double dy);
-void	rotate_player(t_game *game, double angle);
 
 #endif
