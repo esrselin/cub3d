@@ -52,6 +52,8 @@ static int	set_texture(t_parse *p, t_map *map, int side, const char *path)
 		return (set_err(p, "texture must be a .xpm file", path));
 	if (!check_readable(p, path))
 		return (0);
+	if (!xpm_header_ok(path))
+		return (set_err(p, "invalid or oversized XPM header", path));
 	map->tex_path[side] = ft_strdup(path);
 	if (!map->tex_path[side])
 		return (set_err(p, "memory allocation failed", NULL));
@@ -80,7 +82,10 @@ static int	set_color(t_parse *p, t_map *map, int which, const char *tok)
 
 /*
 ** Parses one non-blank line that is not a map line. Tabs become spaces so
-** ft_split sees a single separator; exactly two tokens are required.
+** ft_split sees a single separator. A texture needs exactly two tokens.
+** A colour gets everything after its identifier, so "F 220, 100, 0" is
+** accepted: the subject lets an element's information be separated by
+** spaces, and parse_rgb still requires the commas.
 */
 int	parse_element(t_parse *p, t_map *map, char *line)
 {
@@ -100,12 +105,12 @@ int	parse_element(t_parse *p, t_map *map, char *line)
 		ok = set_err(p, "unknown identifier", tok[0]);
 	else if (!tok[1])
 		ok = set_err(p, "missing value for identifier", tok[0]);
+	else if (id >= ID_F)
+		ok = set_color(p, map, id, skip_ws(skip_ws(line) + ft_strlen(tok[0])));
 	else if (tok[2])
 		ok = set_err(p, "too many values for identifier", tok[0]);
-	else if (id < ID_F)
-		ok = set_texture(p, map, id, tok[1]);
 	else
-		ok = set_color(p, map, id, tok[1]);
+		ok = set_texture(p, map, id, tok[1]);
 	ft_free_tab(tok);
 	return (ok);
 }

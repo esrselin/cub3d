@@ -35,9 +35,9 @@
 # define EV_KEY_PRESS		2
 # define EV_KEY_RELEASE		3
 # define EV_DESTROY			17
-# define MASK_KEY_PRESS		(1L << 0)
-# define MASK_KEY_RELEASE	(1L << 1)
-# define MASK_STRUCTURE		(1L << 17)
+# define MASK_KEY_PRESS		1
+# define MASK_KEY_RELEASE	2
+# define MASK_STRUCTURE		131072
 
 /* ---------------------------------------------------------------------- */
 /*  X11 keysyms (Linux, see X11/keysymdef.h)                               */
@@ -64,6 +64,8 @@ enum e_side
 # define ID_C				5
 # define ID_COUNT			6
 # define ERR_DETAIL_LEN		256
+/* Largest texture width/height accepted (see xpm_check.c).               */
+# define XPM_MAX_SIDE		4096
 
 /* Camera plane half-length: tan(66deg / 2) ~= 0.66 gives a 66deg FOV.     */
 # define FOV_PLANE			0.66
@@ -293,6 +295,8 @@ int			is_map_line(const char *s);
 int			parse_element(t_parse *p, t_map *map, char *line);
 /* parse_rgb.c */
 int			parse_rgb(t_parse *p, const char *s, int *out);
+/* xpm_check.c */
+int			xpm_header_ok(const char *path);
 /* parse_map_start.c */
 int			find_map_start(t_parse *p, t_map *map);
 int			collect_map(t_parse *p, t_map *map, int start);

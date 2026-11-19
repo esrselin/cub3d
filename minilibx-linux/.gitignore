@@ -12,7 +12,7 @@ Makefile.gen
 
 
 
-## Template trom https://github.com/github/gitignore
+## Template from https://github.com/github/gitignore
 # Prerequisites
 *.d
 

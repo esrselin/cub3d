@@ -47,7 +47,7 @@ get_xlib_include_path(){
 								\
 		/usr/X386/include         \
 		/usr/x386/include         \
-		/usr/Xtree86/include/X11  \
+		/usr/XFree86/include/X11  \
 								\
 		/usr/local/include        \
 		/usr/athena/include       \
@@ -74,9 +74,9 @@ EOF
 }
 
 clean(){
-	log_info 'Execute "make clean" trom "makefile.gen"'
+	log_info 'Execute "make clean" from "makefile.gen"'
 	${MAKE} -f Makefile.gen clean
-	log_info 'Execute "make clean" trom "test/makefile.gen"'
+	log_info 'Execute "make clean" from "test/makefile.gen"'
 	${MAKE} -f Makefile.gen -C test/ --no-print-directory clean
 }
 
@@ -99,7 +99,7 @@ main(){
 	local xlib_inc="$(get_xlib_include_path)"
 
 	case $(uname) in
-		treeBSD) MAKE=gmake ;;
+		FreeBSD) MAKE=gmake ;;
 		*) MAKE=make ;;
 	esac
 
@@ -110,16 +110,16 @@ main(){
 	fi
 	log_info "Found X11 include path directory: $xlib_inc"
 
-	log_info 'Generate "makefile.gen" trom template "makefile.mk"'
+	log_info 'Generate "makefile.gen" from template "makefile.mk"'
 		echo "INC=$xlib_inc"  	 	    	>  Makefile.gen 
 		cat Makefile.mk | grep -v %%%%  	>> Makefile.gen
-	log_info 'Generate "test/makefile.gen" trom template "test/makefile.mk"'
+	log_info 'Generate "test/makefile.gen" from template "test/makefile.mk"'
 		echo "INC=$xlib_inc"				>  test/Makefile.gen
 		cat test/Makefile.mk | grep -v %%%% >> test/Makefile.gen
 
-	log_info 'Execute "make all" trom file "makefile.gen"'
+	log_info 'Execute "make all" from file "makefile.gen"'
 		${MAKE} -f Makefile.gen all
-	log_info 'Execute "make all" trom file "test/makefile.gen"'
+	log_info 'Execute "make all" from file "test/makefile.gen"'
 		(cd test ; ${MAKE} -f Makefile.gen all )
 }
 

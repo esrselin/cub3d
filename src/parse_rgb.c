@@ -40,9 +40,11 @@ static int	parse_channel(const char *s, int *i)
 }
 
 /*
-** Strict "R,G,B": three channels, exactly one comma between them, nothing
-** after the last one. Rejects "255,,0", "255,0,0,", "a,b,c", "-1,0,0",
-** "0255,0,0" (invalid) and "256,0,0" (out of range).
+** "R,G,B": three channels, exactly one comma between them, nothing after
+** the last one. Spaces are allowed around each channel ("220, 100, 0"),
+** the commas are not optional. Rejects "220 100 0", "255,,0", "255,0,0,",
+** "a,b,c", "-1,0,0", "0255,0,0" (invalid) and "256,0,0" (out of range).
+** Tabs were already turned into spaces by parse_element.
 */
 int	parse_rgb(t_parse *p, const char *s, int *out)
 {
@@ -54,9 +56,13 @@ int	parse_rgb(t_parse *p, const char *s, int *out)
 	c = 0;
 	while (c < 3)
 	{
+		while (s[i] == ' ')
+			i++;
 		v[c] = parse_channel(s, &i);
 		if (v[c] == -2)
 			return (set_err(p, "color channel out of range (0-255)", s));
+		while (s[i] == ' ')
+			i++;
 		if (v[c] < 0 || (c < 2 && s[i] != ','))
 			return (set_err(p, "invalid color value", s));
 		if (c < 2)

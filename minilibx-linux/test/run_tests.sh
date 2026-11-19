@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 # This very basic script simulate user inputs for the CI
-# Feel tree to update, improve or remove it if proper 
+# Feel free to update, improve or remove it if proper 
 # intergration tests and/or unit tests are added.
 
 set -e
@@ -37,7 +37,7 @@ at_exit() {
 	fi
 	log_error "Something went wrong. Pid [$PID] has been killed. Status code $status"
 }
-# to properly quit trom ctrl+c (SIGINT Signal)
+# to properly quit from ctrl+c (SIGINT Signal)
 sigint_handler(){
 	kill -s TERM "$PID"
 	wait
@@ -81,7 +81,7 @@ test_default_main(){
 
 main(){
 	case $(uname) in
-		treeBSD) MAKE=gmake ;;
+		FreeBSD) MAKE=gmake ;;
 		*) MAKE=make ;;
 	esac
 	cd $(dirname $0)

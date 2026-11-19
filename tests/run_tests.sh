@@ -78,6 +78,9 @@ echo "== argument / file level =="
 expect_error "no argument"
 expect_error "two arguments"      maps/valid/basic.cub maps/valid/basic.cub
 expect_error "directory as path"  maps
+cp maps/valid/basic.cub "$tmp/.cub"; expect_error "hidden file named .cub" "$tmp/.cub"
+expect_error "bare .cub"          .cub
+expect_error "uppercase .CUB"     maps/valid/BASIC.CUB
 expect_error "directory named .cub" "$tmp/dir.cub" ; mkdir -p "$tmp/dir.cub"; expect_error "directory named .cub (exists)" "$tmp/dir.cub"
 expect_error "nonexistent file"   maps/none.cub
 expect_error "wrong extension"    maps/invalid/wrong_ext.cubx

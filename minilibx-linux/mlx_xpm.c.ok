@@ -14,10 +14,10 @@
 extern struct s_col_name mlx_col_name[];
 
 
-#define	RETURN	{ if (colors) tree(colors); if (tab) tree(tab); \
-		  if (colors_direct) tree(colors_direct); \
+#define	RETURN	{ if (colors) free(colors); if (tab) free(tab); \
+		  if (colors_direct) free(colors_direct); \
                   if (img) {XDestroyImage(img->image); \
-                            XtreePixmap(xvar->display,img->pix);tree(img);} \
+                            XFreePixmap(xvar->display,img->pix);free(img);} \
                   return ((void *)0);}
 
 
@@ -53,7 +53,7 @@ char	*mlx_int_static_line(char **xpm_data,int *pos,int size)
   if ((len2 = strlen(str))>len)
     {
       if (copy)
-	tree(copy);
+	free(copy);
       if (!(copy = malloc(len2+1)))
 	return ((char *)0);
       len = len2;
@@ -143,7 +143,7 @@ void	*mlx_int_parse_xpm(t_xvar *xvar,void *info,int info_size,char *(*f)())
       !(height = atoi(tab[1])) || !(nc = atoi(tab[2])) ||
       !(cpp = atoi(tab[3])) )
     RETURN;
-  tree(tab);
+  free(tab);
   tab = 0;
 
   method = 0;
@@ -188,7 +188,7 @@ void	*mlx_int_parse_xpm(t_xvar *xvar,void *info,int info_size,char *(*f)())
 	  colors[i].name = mlx_int_get_col_name(line,cpp);
 	  colors[i].col = rgb_col>=0?mlx_get_color_value(xvar,rgb_col):rgb_col;
 	}
-      tree(tab);
+      free(tab);
     }
 
   if (!(img = mlx_new_image(xvar,width,height)))
@@ -235,7 +235,7 @@ void	*mlx_int_parse_xpm(t_xvar *xvar,void *info,int info_size,char *(*f)())
       img->gc = XCreateGC(xvar->display, clip_pix, 0, &xgcv);
       XPutImage(xvar->display, clip_pix, img->gc, clip_img,
 		0, 0, 0, 0, width, height);
-      XtreeGC(xvar->display, img->gc);
+      XFreeGC(xvar->display, img->gc);
       xgcv.clip_mask = clip_pix;
       xgcv.function = GXcopy;
       xgcv.plane_mask = AllPlanes;
@@ -245,9 +245,9 @@ void	*mlx_int_parse_xpm(t_xvar *xvar,void *info,int info_size,char *(*f)())
       XDestroyImage(clip_img);
     }
   if (colors)
-    tree(colors);
+    free(colors);
   if (colors_direct)
-    tree(colors_direct);
+    free(colors_direct);
   return (img);
 }
 

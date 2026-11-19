@@ -44,7 +44,8 @@ SRCS        := main.c \
                parse_rgb.c \
                parse_map_start.c \
                map_validate.c \
-               map_player.c
+               map_player.c \
+               xpm_check.c
 
 
 BONUS_ONLY  :=

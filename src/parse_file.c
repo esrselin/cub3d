@@ -13,18 +13,23 @@
 #include "cub3d.h"
 
 /*
-** Extension must be ".cub" with at least one character before it, and the
-** file must be openable AND readable: open() succeeds on a directory, only
-** read() reports EISDIR.
+** The file NAME (after the last '/') must be ".cub" with at least one
+** character before it: "maps/.cub" is rejected like ".cub". The file must
+** be openable AND readable: open() succeeds on a directory, only read()
+** reports EISDIR.
 */
 static int	check_path(t_parse *p, const char *path)
 {
 	size_t	len;
+	size_t	name;
 	int		fd;
 	char	c;
 
 	len = ft_strlen(path);
-	if (len < 5 || ft_strcmp(path + len - 4, ".cub") != 0)
+	name = len;
+	while (name > 0 && path[name - 1] != '/')
+		name--;
+	if (len - name < 5 || ft_strcmp(path + len - 4, ".cub") != 0)
 		return (set_err(p, "scene file must have a .cub extension", path));
 	fd = open(path, O_RDONLY);
 	if (fd < 0)
