@@ -85,9 +85,6 @@ enum e_side
 /* Distance kept between the camera and any wall (in cells).              */
 # define WALL_MARGIN		0.15
 
-/* Phase 4 flat wall colours: x-side hits lighter, y-side hits darker.     */
-# define WALL_X_COLOR		0xC8C8C8
-# define WALL_Y_COLOR		0x7A7A7A
 /* Substitute for 1/0 when a ray component is exactly zero.                */
 # define RAY_INF			1e30
 
