@@ -6,7 +6,7 @@
 /*   By: ogokdas <ogokdas@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/11/22 17:21:30 by ogokdas           #+#    #+#             */
-/*   Updated: 2026/11/22 17:21:30 by ogokdas          ###   ########.fr       */
+/*   Updated: 2026/11/22 17:40:11 by ogokdas          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,10 @@ int	game_loop_bonus(t_bgame *bg)
 	return (0);
 }
 
-/* The keyboard and close handlers are the mandatory ones.                */
+/*
+** The keyboard and close handlers are the mandatory ones; the pointer
+** hooks get the whole t_bgame because they need the mouse state.
+*/
 void	set_hooks_bonus(t_bgame *bg)
 {
 	t_game	*game;
@@ -47,5 +50,7 @@ void	set_hooks_bonus(t_bgame *bg)
 	mlx_hook(game->win, EV_KEY_RELEASE, MASK_KEY_RELEASE,
 		handle_release, game);
 	mlx_hook(game->win, EV_DESTROY, MASK_STRUCTURE, handle_close, game);
+	mlx_hook(game->win, EV_MOTION, MASK_MOTION, handle_mouse, bg);
+	mlx_hook(game->win, EV_LEAVE, MASK_LEAVE, handle_mouse_leave, bg);
 	mlx_loop_hook(game->mlx, game_loop_bonus, bg);
 }

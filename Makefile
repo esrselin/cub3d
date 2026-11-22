@@ -50,7 +50,8 @@ SRCS        := main.c \
 
 BSRC_DIR    := src_bonus
 BONUS_ONLY  := main_bonus.c \
-               loop_bonus.c
+               loop_bonus.c \
+               mouse_bonus.c
 BONUS_SRCS  := $(filter-out main.c, $(SRCS)) $(BONUS_ONLY)
 
 OBJS        := $(addprefix $(OBJ_DIR)/,  $(SRCS:.c=.o))
