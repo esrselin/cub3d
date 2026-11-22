@@ -48,8 +48,10 @@ SRCS        := main.c \
                xpm_check.c
 
 
-BONUS_ONLY  :=
-BONUS_SRCS  := $(SRCS) $(BONUS_ONLY)
+BSRC_DIR    := src_bonus
+BONUS_ONLY  := main_bonus.c \
+               loop_bonus.c
+BONUS_SRCS  := $(filter-out main.c, $(SRCS)) $(BONUS_ONLY)
 
 OBJS        := $(addprefix $(OBJ_DIR)/,  $(SRCS:.c=.o))
 BOBJS       := $(addprefix $(BOBJ_DIR)/, $(BONUS_SRCS:.c=.o))
@@ -61,6 +63,7 @@ all: $(NAME)
 
 $(NAME): $(LIBFT) $(MLX) $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) $(LDFLAGS) -o $@
+	@rm -f .bonus
 
 bonus: .bonus
 
@@ -74,7 +77,11 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 
 $(BOBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) $(CFLAGS) -D BONUS $(INCS) -c $< -o $@
+	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
+
+$(BOBJ_DIR)/%.o: $(BSRC_DIR)/%.c
+	@mkdir -p $(dir $@)
+	$(CC) $(CFLAGS) $(INCS) -c $< -o $@
 
 $(LIBFT): $(LIBFT_SRCS)
 	$(MAKE) -C $(LIBFT_DIR)
