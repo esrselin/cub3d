@@ -33,6 +33,7 @@ int	game_loop_bonus(t_bgame *bg)
 	game->last_frame = now;
 	handle_keys(game, dt);
 	cast_rays(game);
+	draw_minimap(bg);
 	present_frame(game);
 	return (0);
 }

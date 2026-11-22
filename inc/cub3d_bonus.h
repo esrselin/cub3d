@@ -24,6 +24,21 @@
 # define MOUSE_SENS			0.003
 
 /*
+** Minimap: a panel in the top-left corner of the frame, at most MM_SIZE
+** pixels wide and high (plus MM_PAD of border). A map cell is drawn
+** MM_CELL_MAX pixels at most, MM_CELL_MIN at least.
+*/
+# define MM_X				16
+# define MM_Y				16
+# define MM_SIZE			200
+# define MM_PAD				4
+# define MM_CELL_MAX		14
+# define MM_CELL_MIN		4
+# define MM_BG				0x101010
+# define MM_WALL			0xD8D8D8
+# define MM_FLOOR			0x404040
+
+/*
 ** t_bgame - root object of the bonus build.
 ** Reason: t_game is the FIRST member, so a t_bgame * is also a valid
 ** t_game * (C guarantees a struct and its first member share an address).
@@ -31,12 +46,14 @@
 ** reused unchanged on &bg->g; only the bonus state lives here.
 **   mouse_x    pointer x at the previous MotionNotify
 **   mouse_in   0 until the first MotionNotify after entering the window
+**   mm_cell    minimap pixels per map cell, chosen from the map size
 */
 typedef struct s_bgame
 {
 	t_game	g;
 	int		mouse_x;
 	int		mouse_in;
+	int		mm_cell;
 }	t_bgame;
 
 /* loop_bonus.c */
@@ -45,5 +62,7 @@ void	set_hooks_bonus(t_bgame *bg);
 /* mouse_bonus.c */
 int		handle_mouse(int x, int y, t_bgame *bg);
 int		handle_mouse_leave(t_bgame *bg);
+/* minimap_bonus.c */
+void	draw_minimap(t_bgame *bg);
 
 #endif
