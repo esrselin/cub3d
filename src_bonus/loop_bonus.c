@@ -34,6 +34,7 @@ int	game_loop_bonus(t_bgame *bg)
 	handle_keys(game, dt);
 	cast_rays(game);
 	draw_minimap(bg);
+	draw_minimap_player(bg);
 	present_frame(game);
 	return (0);
 }

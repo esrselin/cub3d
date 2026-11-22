@@ -37,6 +37,7 @@
 # define MM_BG				0x101010
 # define MM_WALL			0xD8D8D8
 # define MM_FLOOR			0x404040
+# define MM_PLAYER			0xFF3030
 
 /*
 ** t_bgame - root object of the bonus build.
@@ -64,5 +65,7 @@ int		handle_mouse(int x, int y, t_bgame *bg);
 int		handle_mouse_leave(t_bgame *bg);
 /* minimap_bonus.c */
 void	draw_minimap(t_bgame *bg);
+/* minimap_player_bonus.c */
+void	draw_minimap_player(t_bgame *bg);
 
 #endif
